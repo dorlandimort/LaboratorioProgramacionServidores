@@ -1,0 +1,50 @@
+
+<html>
+<head>
+    <title>Formulario</title>
+    <meta charset="utf-8">
+    <script src="js/jquery.min.js"> </script>
+</head>
+<body>
+    
+    <div id="formulario">
+        <form>
+            <label for="usuario">
+            <input type="text" id="usuario" name="usuario" placeholder="Usuario" required>
+             <label for="password">
+            <input type="text" id="password" name="password" placeholder="Password" required>
+            <buton id="aceptar" onClick="validar()">Aceptar</button>
+        </form>
+    </div>
+    <div id="datos" class="hidden">
+        <h2>Detalle de la cuenta</h2>
+        <input id="idU" readonly></label>
+        <label id="pass" readonly></label>
+    </div>
+    <script>
+        function validar() {
+            var user = $("#usuario").val();
+            var pass = $("#password").val();
+            var datos = {
+                "user": user,
+                "pass": pass
+            };
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8090/Dia03Prj/",
+                data: {
+                    jsonData: JSON.stringify(datos)
+                }, 
+                dataType: 'json',
+                success: function(data) {
+                        console.log(data);
+                }, 
+                error: function() {
+                    console.log("error")
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

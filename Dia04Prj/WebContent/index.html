@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Formulario</title>
+<link rel="stylesheet" type="text/css" href="css/custom.css">
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="fonts/css/font-awesome.min.css">
+
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootbox.min.js"></script>
+
+</head>
+<body>
+	<div id="wrapper">
+    	<div id="login" class="animate form">
+			<section class="login_content">
+				<div id="login">
+					<form id='f' class='cssform'>
+						<h1>Iniciar Sesión</h1>
+						<div>
+							<input type="text" class="form-control" id='user' placeholder="Usuario" required/>
+						</div>
+						<div>
+							<input type="password" class="form-control" id='pass' placeholder="Contraseña" required/>
+						</div>
+						<div>
+							<input type="button" class="btn btn-default submit" id="aceptar" value='Aceptar'></input>
+						</div>
+					</form>
+				</div>
+			</section>
+		</div>
+	</div>
+	<div id="valores">
+		<div class="right_col" role="main">
+			<form class="form-horizontal form-label-center">
+	    		<h1 id="nombreUsuario" class="section">Bienvenido</h1>
+			    <div class="item form-group">
+			        <label class="control-label col-md-3 col-sm-3 col-xs-12">Usuario:</label>
+			        <div class="col-md-6 col-sm-6 col-xs-12">
+			            <input id="usuario" class="form-control col-md-7 col-xs-12" type="text" readonly>
+			        </div>
+			    </div>
+	
+			    <div class="item form-group">
+			        <label class="control-label col-md-3 col-sm-3 col-xs-12">Password:</label>
+			        <div class="col-md-6 col-sm-6 col-xs-12">
+			            <input id="password" class="form-control col-md-7 col-xs-12" type="password" readonly>
+			        </div>
+			    </div>
+	
+			    <div class="item form-group">
+			        <label class="control-label col-md-3 col-sm-3 col-xs-12">Status:</label>
+			        <div class="col-md-6 col-sm-6 col-xs-12">
+			            <input id="activo" class="form-control col-md-7 col-xs-12" type="text" readonly>
+			        </div>
+			    </div>
+			    
+			    <div class="item form-group">
+			        <label class="control-label col-md-3 col-sm-3 col-xs-12">Nombre:</label>
+			        <div class="col-md-6 col-sm-6 col-xs-12">
+			            <input id="nombre" class="form-control col-md-7 col-xs-12" type="text" readonly>
+			        </div>
+			    </div>
+			
+			    <div class="item form-group">
+			        <label class="control-label col-md-3 col-sm-3 col-xs-12">Sexo</label>
+			        <div class="col-md-6 col-sm-6 col-xs-12">
+			            <input id="sexo" class="form-control col-md-7 col-xs-12" type="text" readonly>
+			        </div>
+			    </div>
+	
+			    <div class="item form-group">
+			        <label class="control-label col-md-3 col-sm-3 col-xs-12">Fecha de Nacimiento:</label>
+			        <div class="col-md-6 col-sm-6 col-xs-12">
+			            <input id="fNacimiento" class="form-control col-md-7 col-xs-12" type="text" readonly>
+			        </div>
+			    </div>
+			
+			    <div class="item form-group">
+			        <label class="control-label col-md-3 col-sm-3 col-xs-12">Nombre del perfil:</label>
+			        <div class="col-md-6 col-sm-6 col-xs-12">
+			            <input id="pNombre" class="form-control col-md-7 col-xs-12" type="text" readonly>
+			        </div>
+			    </div>
+			
+			    <div class="item form-group">
+			        <label for="password" class="control-label col-md-3">Descripción:</label>
+			        <div class="col-md-6 col-sm-6 col-xs-12">
+			            <input id="descripcion" class="form-control col-md-7 col-xs-12" type="text" readonly>
+			        </div>
+			    </div>
+			</form>
+		</div>
+	</div>
+	<script>
+		
+		$(document).ready(function() {
+			$("#valores").hide();
+			$("#error").hide();
+			$("#errorVacio").hide();
+			$("#aceptar").click(function() {
+				var usuario = $("#user").val();
+				var password = $("#pass").val();
+				if (usuario != "" || password != "") {
+					$.ajax({
+						type: "POST",
+						url: "main.jsp",
+						data: {
+							usuario: usuario,
+							pass: password
+						},
+						success: function(result) {
+							console.log(result);
+							$("#error").hide();
+							$("#usuario").val(result.cuenta.usuario);
+							$("#password").val(result.cuenta.contrasena);
+							$("#activo").val(result.cuenta.status);
+							$("#nombre").val(result.persona.nombre);
+							$("#sexo").val(result.persona.sexo);
+							$("#fNacimiento").val(result.persona.fechaNacimiento);
+							$("#pNombre").val(result.perfil.nombre);
+							$("#descripcion").val(result.perfil.descripcion);
+							$("#nombreUsuario").append(" " + result.persona.nombre);
+							$("#f").hide();
+							$("#valores").show();
+						},
+						error: function(error) {
+							console.log(error);
+							if (error.status == 450)
+								bootbox.alert("Nombre de usuario y/o contraseña incorrectos.");
+							else if (error.status == 550)
+								bootbox.alert(error.statusText);
+							else if (error.status == 551)
+								bootbox.alert("Error de conexión a la base de datos.");
+						}
+					});
+				} else {
+					//$("#errorVacio").show();
+					bootbox.alert("Por favor ingresa un nombre de usuario y/o contraseña.");
+				}
+			})
+			
+		});
+	</script>
+</body>
+</html>
